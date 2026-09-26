@@ -1,9 +1,10 @@
 <Project Sdk="Dalamud.NET.Sdk/15.0.0">
   <PropertyGroup>
-    <Version>0.3.1.0</Version>
+    <Version>0.3.2.0</Version>
     <Author>kuchris</Author>
     <Name>MoreMacros</Name>
     <RepoUrl>https://github.com/kuchris/moremacros</RepoUrl>
+    <IconUrl>https://raw.githubusercontent.com/kuchris/moremacros/0.3.2.0/images/icon.png</IconUrl>
     <RepositoryUrl>https://github.com/kuchris/moremacros</RepositoryUrl>
     <Punchline>Extra macro pages beside Individual and Shared.</Punchline>
     <Description>Extra pages of 100 macros beside Individual and Shared, with native hotbar links, auto-translate, and macro command icons. English interface for the international client.</Description>
@@ -12,5 +13,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MoreMacros.Core\MoreMacros.Core.csproj" />
+    <None Include="..\images\icon.png" Link="images\icon.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

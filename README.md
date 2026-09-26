@@ -1,5 +1,7 @@
 # MoreMacros
 
+<img src="images/icon.png" alt="MoreMacros: gold quill on a red macro tile with a gold plus" width="128" height="128" />
+
 Extra macro pages beside **Individual** and **Shared** in FFXIV's User Macros window. Save more macros and use them from the game's existing hotbars without using any Individual or Shared macro slots.
 
 Built for the international client, including Japanese servers, with an English interface. Requires Dalamud API 15.
