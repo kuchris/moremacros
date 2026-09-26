@@ -3,10 +3,10 @@
 The shared catalogue is published at:
 
 ```text
-https://raw.githubusercontent.com/kuchris/xivaichat/main/repo.json
+https://raw.githubusercontent.com/kuchris/DalamudPlugins/main/repo.json
 ```
 
-It includes **XIV AI Chat** and **MoreMacros**. Players subscribe once and install either plugin separately. Each plugin retains its own settings, source repository, version, and release ZIP.
+The dedicated [DalamudPlugins repository](https://github.com/kuchris/DalamudPlugins) includes **XIV AI Chat** and **MoreMacros**. Players subscribe once and install either plugin separately. Each plugin retains its own settings, source repository, version, and release ZIP.
 
 | Plugin | Source | Initial shared-catalogue release |
 | --- | --- | --- |
@@ -15,14 +15,14 @@ It includes **XIV AI Chat** and **MoreMacros**. Players subscribe once and insta
 
 ## Player setup
 
-Add the URL in `/xlsettings` → **Experimental** → **Custom Plugin Repositories**, save, and open `/xlplugins`. Existing XIV AI Chat subscribers only need to refresh the installer to find MoreMacros.
+Add the URL in `/xlsettings` → **Experimental** → **Custom Plugin Repositories**, save, and open `/xlplugins`. If you used `xivaichat/main/repo.json`, replace that repository entry with the new URL. Keep the installed plugins and their settings, then refresh the installer.
 
 ## Publish a MoreMacros update
 
 1. Change the version in `MoreMacros/MoreMacros.csproj`, then run `./test.ps1` and `./build.ps1`.
 2. Commit and push the source. Create a GitHub Release for that commit and upload `artifacts/MoreMacros-<version>.zip`.
 3. Check that the public ZIP downloads and contains `MoreMacros.dll`, `MoreMacros.Core.dll`, `MoreMacros.json`, and `MoreMacros.deps.json` at its root.
-4. Update a fresh checkout of `kuchris/xivaichat/main`. In `repo.json`, select the entry with `InternalName = MoreMacros` and update its fields from the packaged manifest:
+4. Update a fresh checkout of `kuchris/DalamudPlugins/main`. In `repo.json`, select the entry with `InternalName = MoreMacros` and update its fields from the packaged manifest:
 
    - `AssemblyVersion` and `TestingAssemblyVersion`
    - `DalamudApiLevel` and `TestingDalamudApiLevel`
@@ -42,13 +42,15 @@ Adding another plugin follows the same process: append one object with a unique 
 
 ## Release automation
 
-XIV AI Chat's packer selects its entry by `InternalName`, preserving other entries regardless of their order. Its tag workflow publishes its ZIP, then merges only its release fields into the latest catalogue on `main`. It rejects version downgrades and a conflicting push rather than replacing newer work.
+Updates to the new `DalamudPlugins` catalogue are currently manual for both plugins. Publish the release ZIP first, then update its matching entry in this repository.
 
-MoreMacros releases and catalogue updates are currently published manually. A future workflow in the MoreMacros repository would need a GitHub App or token with write permission to `xivaichat` to update the shared catalogue. Its default `GITHUB_TOKEN` only has access to its own repository.
+XIV AI Chat's existing tag workflow still publishes its ZIP and updates its older local catalogue for compatibility. It does not update `DalamudPlugins`. MoreMacros releases are currently published manually.
+
+A future workflow in either source repository would need a GitHub App or token with write permission to `DalamudPlugins` to update the shared catalogue. Its default `GITHUB_TOKEN` only has access to its own repository.
 
 ## References
 
-- [Shared catalogue](https://raw.githubusercontent.com/kuchris/xivaichat/main/repo.json)
+- [Shared catalogue](https://raw.githubusercontent.com/kuchris/DalamudPlugins/main/repo.json)
 - [XIV AI Chat packer](https://github.com/kuchris/xivaichat/blob/main/tools/pack.ps1)
 - [XIV AI Chat release workflow](https://github.com/kuchris/xivaichat/blob/main/.github/workflows/release.yml)
 - [GitHub token scope](https://docs.github.com/en/actions/concepts/security/github_token)

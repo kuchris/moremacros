@@ -18,10 +18,12 @@ Built for the international client, including Japanese servers, with an English 
 MoreMacros and [XIV AI Chat](https://github.com/kuchris/xivaichat) use one custom plugin repository URL:
 
 ```text
-https://raw.githubusercontent.com/kuchris/xivaichat/main/repo.json
+https://raw.githubusercontent.com/kuchris/DalamudPlugins/main/repo.json
 ```
 
-In `/xlsettings` → **Experimental** → **Custom Plugin Repositories**, add this URL and save. Open `/xlplugins`, find **MoreMacros**, and install it. If you already use this URL for XIV AI Chat, refresh the installer; no second URL is needed.
+In `/xlsettings` → **Experimental** → **Custom Plugin Repositories**, add this URL and save. Open `/xlplugins`, find **MoreMacros**, and install it. This URL also includes XIV AI Chat.
+
+If you previously subscribed through `xivaichat/main/repo.json`, replace that repository URL with the one above and refresh the installer. Keep your installed plugins and settings.
 
 Open **User Macros** and click **MoreMacros** beside Shared, or enter `/moremacros`.
 
