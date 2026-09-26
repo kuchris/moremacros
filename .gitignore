@@ -1,0 +1,15 @@
+**/bin/
+**/obj/
+artifacts/
+.vs/
+*.user
+*.log
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+library.json
+library.json.bak
+hotbar-link-backups/
+exports/

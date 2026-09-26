@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x64</PlatformTarget>
+    <DalamudLibPath>$(APPDATA)\XIVLauncher\addon\Hooks\dev</DalamudLibPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MoreMacros.Core\MoreMacros.Core.csproj" />
+    <Compile Include="..\..\MoreMacros\MacroWindow.cs" Link="MacroWindow.cs" />
+    <Compile Include="..\..\MoreMacros\IMacroHost.cs" Link="IMacroHost.cs" />
+    <Compile Include="..\..\MoreMacros\GameIconLoader.cs" Link="GameIconLoader.cs" />
+    <Compile Include="..\..\MoreMacros\MacroIconProvider.cs" Link="MacroIconProvider.cs" />
+    <Compile Include="..\..\MoreMacros\HotbarDropTarget.cs" Link="HotbarDropTarget.cs" />
+    <Reference Include="Dalamud.Bindings.ImGui"><HintPath>$(DalamudLibPath)\Dalamud.Bindings.ImGui.dll</HintPath></Reference>
+    <Reference Include="HexaGen.Runtime"><HintPath>$(DalamudLibPath)\HexaGen.Runtime.dll</HintPath></Reference>
+    <None Include="$(DalamudLibPath)\cimgui.dll" Link="cimgui.dll" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
