@@ -1,64 +1,54 @@
 # One Dalamud URL for multiple plugins
 
-Keep the existing URL:
+The shared catalogue is published at:
 
 ```text
 https://raw.githubusercontent.com/kuchris/xivaichat/main/repo.json
 ```
 
-This JSON file is a catalogue of plugins. Each entry points to its own ZIP. Source projects and release assets can live in different GitHub repositories while players subscribe to this one URL.
+It includes **XIV AI Chat** and **MoreMacros**. Players subscribe once and install either plugin separately. Each plugin retains its own settings, source repository, version, and release ZIP.
 
-## Setup
+| Plugin | Source | Initial shared-catalogue release |
+| --- | --- | --- |
+| XIV AI Chat | [kuchris/xivaichat](https://github.com/kuchris/xivaichat) | [0.1.2.0](https://github.com/kuchris/xivaichat/releases/tag/0.1.2.0) |
+| MoreMacros | [kuchris/moremacros](https://github.com/kuchris/moremacros) | [0.3.1.0](https://github.com/kuchris/moremacros/releases/tag/0.3.1.0) |
 
-1. Keep the existing `XivAiChat` entry in `xivaichat/main/repo.json`.
-2. Upload the MoreMacros package as a public GitHub Release asset. The current local package is `artifacts/MoreMacros-0.3.1.0.zip`. It contains the entry DLL, Core dependency, manifest, and dependency metadata at the ZIP root.
-3. Add a second object to the JSON array, using the built `artifacts/plugin/MoreMacros.json` as its manifest source. Set the fields below using the real uploaded asset URL.
-4. Publish the updated catalogue on `main`. Existing users keep their repository setting and refresh the plugin installer to discover MoreMacros.
+## Player setup
 
-| Field | MoreMacros value |
-| --- | --- |
-| `InternalName` | `MoreMacros` (must match the assembly/manifest name) |
-| `Name` | `MoreMacros` |
-| `AssemblyVersion` | `0.3.1.0` (use the package's actual version) |
-| `DalamudApiLevel` | `15` (use the built manifest value) |
-| `DownloadLinkInstall` | Public URL of the uploaded MoreMacros ZIP |
-| `DownloadLinkUpdate` | Same URL as the installation ZIP |
-| `RepoUrl` | Source/project page for MoreMacros |
-| `Author`, `Description`, `Punchline`, `Tags` | Copy from the built manifest |
-| `LastUpdate` | Current Unix timestamp |
+Add the URL in `/xlsettings` → **Experimental** → **Custom Plugin Repositories**, save, and open `/xlplugins`. Existing XIV AI Chat subscribers only need to refresh the installer to find MoreMacros.
 
-Use a version-specific asset URL so a catalogue version always identifies the same package. Upload the ZIP before publishing its catalogue entry. Each plugin keeps a distinct `InternalName` and its own version number. No DLLs or config files need to be merged.
+## Publish a MoreMacros update
 
-New users add the existing URL in `/xlsettings` → **Experimental** → **Custom Plugin Repositories**, save, then open `/xlplugins`. They can install either plugin separately.
+1. Change the version in `MoreMacros/MoreMacros.csproj`, then run `./test.ps1` and `./build.ps1`.
+2. Commit and push the source. Create a GitHub Release for that commit and upload `artifacts/MoreMacros-<version>.zip`.
+3. Check that the public ZIP downloads and contains `MoreMacros.dll`, `MoreMacros.Core.dll`, `MoreMacros.json`, and `MoreMacros.deps.json` at its root.
+4. Update a fresh checkout of `kuchris/xivaichat/main`. In `repo.json`, select the entry with `InternalName = MoreMacros` and update its fields from the packaged manifest:
 
-## Adjust the current XivAiChat packer
+   - `AssemblyVersion` and `TestingAssemblyVersion`
+   - `DalamudApiLevel` and `TestingDalamudApiLevel`
+   - `Author`, `Name`, `Description`, `Punchline`, `Tags`, and `RepoUrl` when changed
+   - `LastUpdate`, using the current Unix timestamp
+   - `DownloadLinkInstall`, `DownloadLinkUpdate`, and `DownloadLinkTesting`, using the real version-specific release asset URL
 
-The current `tools/pack.ps1` reads the full catalogue but updates `$repoEntries[0]`. Select the entry by identity before assigning its metadata:
+5. Keep every other plugin entry intact. Commit and push the catalogue after the release ZIP is available.
 
-```powershell
-$repoEntries = @(Get-Content -LiteralPath $repoJsonPath -Raw | ConvertFrom-Json)
-$matches = @($repoEntries | Where-Object { $_.InternalName -eq 'XivAiChat' })
-if ($matches.Count -ne 1) {
-    throw 'Expected exactly one XivAiChat entry in repo.json.'
-}
-$entry = $matches[0]
+For example, the first MoreMacros asset is:
+
+```text
+https://github.com/kuchris/moremacros/releases/download/0.3.1.0/MoreMacros-0.3.1.0.zip
 ```
 
-Replace each subsequent `$repoEntries[0]` assignment in that script with `$entry`. Continue serializing **the complete `$repoEntries` array** with `ConvertTo-Json -InputObject $repoEntries -Depth 10`; MoreMacros and future entries remain intact.
-
-For a MoreMacros release, perform the same update by `InternalName = 'MoreMacros'`, inserting a new object only when it is absent. Do not regenerate the shared catalogue from a single plugin's manifest.
+Adding another plugin follows the same process: append one object with a unique `InternalName` and its own release links. No second subscription URL is needed.
 
 ## Release automation
 
-The existing XivAiChat workflow triggers on tags and publishes `XivAiChat.zip`. Keep that workflow specific to XivAiChat. MoreMacros needs its own package/release step, even though both packages appear at the same subscription URL.
+XIV AI Chat's packer selects its entry by `InternalName`, preserving other entries regardless of their order. Its tag workflow publishes its ZIP, then merges only its release fields into the latest catalogue on `main`. It rejects version downgrades and a conflicting push rather than replacing newer work.
 
-When updating the shared catalogue, start from the latest `main`, merge only the matching entry, and push that commit. Serialize catalogue updates or retry a rejected push after re-reading `main`; this prevents simultaneous plugin releases from losing each other's metadata. If source projects live in separate repositories, writing to `xivaichat` requires a GitHub App or a token with permission to that repository; a source repository's default `GITHUB_TOKEN` does not grant write access to another repository.
+MoreMacros releases and catalogue updates are currently published manually. A future workflow in the MoreMacros repository would need a GitHub App or token with write permission to `xivaichat` to update the shared catalogue. Its default `GITHUB_TOKEN` only has access to its own repository.
 
-## Sources inspected
+## References
 
-- [Current catalogue](https://raw.githubusercontent.com/kuchris/xivaichat/main/repo.json)
-- [Current packer](https://raw.githubusercontent.com/kuchris/xivaichat/main/tools/pack.ps1)
-- [Current release workflow](https://raw.githubusercontent.com/kuchris/xivaichat/main/.github/workflows/release.yml)
+- [Shared catalogue](https://raw.githubusercontent.com/kuchris/xivaichat/main/repo.json)
+- [XIV AI Chat packer](https://github.com/kuchris/xivaichat/blob/main/tools/pack.ps1)
+- [XIV AI Chat release workflow](https://github.com/kuchris/xivaichat/blob/main/.github/workflows/release.yml)
 - [GitHub token scope](https://docs.github.com/en/actions/concepts/security/github_token)
-
-This guide describes the setup. No GitHub repository, release, or public catalogue was changed by creating it.
